@@ -50,6 +50,16 @@ camera-typeとlcd-typeを指定しない場合は以下の設定となります�
 * GR-PEACH、カメラ：CAMERA_MT9V111、LCD：GR_PEACH_4_3INCH_SHIELD  
 * GR-LYCHEE、カメラ：CAMERA_OV7725、LCD：GR_LYCHEE_LCD  
 
+***mbed CLI以外の環境で使用する場合***  
+mbed CLI以外の環境をお使いの場合、``mbed_app.json``の変更は反映されません。  
+``mbed_config.h``に以下のようにマクロを追加してください。  
+```cpp
+#define MBED_CONF_APP_CAMERA                        1    // set by application
+#define MBED_CONF_APP_CAMERA_TYPE                   CAMERA_CVBS             // set by application
+#define MBED_CONF_APP_LCD                           0    // set by application
+#define MBED_CONF_APP_LCD_TYPE                      GR_PEACH_4_3INCH_SHIELD // set by application
+```
+
 
 ### Windows用PCアプリで表示する
 ``main.cpp``の``JPEG_SEND``に``1``を設定すると、カメラ画像をPCアプリに表示する機能が有効になります。  
