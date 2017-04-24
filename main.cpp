@@ -5,6 +5,8 @@
 /**** User Selection *********/
 /** JPEG out setting **/
 #define JPEG_SEND              (1)                 /* Select  0(JPEG images are not output to PC) or 1(JPEG images are output to PC on USB(CDC) for focusing the camera) */
+#define JPEG_ENCODE_QUALITY    (75)                /* JPEG encode quality (min:1, max:75 (Considering the size of JpegBuffer, about 75 is the upper limit.)) */
+#define VFIELD_INT_SKIP_CNT    (0)                 /* A guide for GR-LYCHEE.  0:60fps, 1:30fps, 2:20fps, 3:15fps, 4:12fps, 5:10fps */
 /*****************************/
 
 /* Video input and LCD layer 0 output */
@@ -42,9 +44,9 @@ static uint8_t user_frame_buffer0[FRAME_BUFFER_STRIDE * FRAME_BUFFER_HEIGHT]__at
 
 #if defined(__ICCARM__)
 #pragma data_alignment=32
-static uint8_t JpegBuffer[2][1024 * 63];
+static uint8_t JpegBuffer[2][1024 * 64];
 #else
-static uint8_t JpegBuffer[2][1024 * 63]__attribute((aligned(32)));
+static uint8_t JpegBuffer[2][1024 * 64]__attribute((aligned(32)));
 #endif
 static size_t jcu_encode_size[2];
 static JPEG_Converter Jcu;
@@ -54,10 +56,13 @@ static int jcu_buf_index_read = 0;
 static volatile int jcu_encoding = 0;
 static volatile int image_change = 0;
 static DisplayApp  display_app;
+static int Vfield_Int_Cnt = 0;
 
 static void JcuEncodeCallBackFunc(JPEG_Converter::jpeg_conv_error_t err_code) {
-    jcu_buf_index_write_done = jcu_buf_index_write;
-    image_change = 1;
+    if (err_code == JPEG_Converter::JPEG_CONV_OK) {
+        jcu_buf_index_write_done = jcu_buf_index_write;
+        image_change = 1;
+    }
     jcu_encoding = 0;
 }
 
@@ -67,11 +72,16 @@ static void snapshot(void) {
     }
     jcu_buf_index_read = jcu_buf_index_write_done;
     image_change = 0;
-
     display_app.SendJpeg(JpegBuffer[jcu_buf_index_read], (int)jcu_encode_size[jcu_buf_index_read]);
 }
 
 static void IntCallbackFunc_Vfield(DisplayBase::int_type_t int_type) {
+    if (Vfield_Int_Cnt < VFIELD_INT_SKIP_CNT) {
+        Vfield_Int_Cnt++;
+        return;
+    }
+    Vfield_Int_Cnt = 0;
+
     //Interrupt callback function
     if (jcu_encoding == 0) {
         JPEG_Converter::bitmap_buff_info_t bitmap_buff_info;
@@ -145,6 +155,8 @@ int main(void) {
         user_frame_buffer0[i + 0] = 0x10;
         user_frame_buffer0[i + 1] = 0x80;
     }
+
+    Jcu.SetQuality(JPEG_ENCODE_QUALITY);
 
     EasyAttach_Init(Display);
 #if JPEG_SEND
