@@ -156,10 +156,9 @@ int main(void) {
         user_frame_buffer0[i + 1] = 0x80;
     }
 
-    Jcu.SetQuality(JPEG_ENCODE_QUALITY);
-
     EasyAttach_Init(Display);
 #if JPEG_SEND
+    Jcu.SetQuality(JPEG_ENCODE_QUALITY);
     // Interrupt callback function setting (Field end signal for recording function in scaler 0)
     Display.Graphics_Irq_Handler_Set(DisplayBase::INT_TYPE_S0_VFIELD, 0, IntCallbackFunc_Vfield);
 #endif
