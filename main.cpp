@@ -7,6 +7,9 @@
 #define JPEG_SEND              (1)                 /* Select  0(JPEG images are not output to PC) or 1(JPEG images are output to PC on USB(CDC) for focusing the camera) */
 #define JPEG_ENCODE_QUALITY    (75)                /* JPEG encode quality (min:1, max:75 (Considering the size of JpegBuffer, about 75 is the upper limit.)) */
 #define VFIELD_INT_SKIP_CNT    (0)                 /* A guide for GR-LYCHEE.  0:60fps, 1:30fps, 2:20fps, 3:15fps, 4:12fps, 5:10fps */
+
+/** Camera setting **/
+#define OV7725_SETTING_TEST    (1)                 /* Exposure and Gain Setting Test 0:disable 1:enable */
 /*****************************/
 
 /* Video input and LCD layer 0 output */
@@ -109,6 +112,14 @@ static void IntCallbackFunc_Vfield(DisplayBase::int_type_t int_type) {
         }
     }
 }
+
+#if OV7725_SETTING_TEST
+static bool touch_notification = false;
+
+static void touch_callback(void) {
+    touch_notification = true;
+}
+#endif
 #endif
 
 static void Start_Video_Camera(void) {
@@ -161,6 +172,10 @@ int main(void) {
     Jcu.SetQuality(JPEG_ENCODE_QUALITY);
     // Interrupt callback function setting (Field end signal for recording function in scaler 0)
     Display.Graphics_Irq_Handler_Set(DisplayBase::INT_TYPE_S0_VFIELD, 0, IntCallbackFunc_Vfield);
+#if OV7725_SETTING_TEST
+    DisplayApp::touch_pos_t s_touch;
+    display_app.SetCallback(&touch_callback);
+#endif
 #endif
     Start_Video_Camera();
 #if MBED_CONF_APP_LCD
@@ -170,6 +185,22 @@ int main(void) {
     while (1) {
 #if JPEG_SEND
         snapshot();
+#if OV7725_SETTING_TEST
+        // OV7725 Setting test
+        if (touch_notification) {
+            display_app.GetCoordinates(1, &s_touch);
+            if (s_touch.valid) {
+                uint16_t usManualExposure = (uint16_t)(0xFFFF * ((float)s_touch.x / 800.f));
+                uint8_t  usManualGain = (uint8_t)(0xFF * ((float)s_touch.y / 480.0f));
+                OV7725_config::SetExposure(false, usManualExposure, usManualGain);
+                printf("usManualExposure 0x%04x, usManualGain 0x%02x\r\n", usManualExposure, usManualGain);
+            } else {
+                OV7725_config::SetExposure(true, 0x0000, 0x00);
+                printf("SetExposure Auto\r\n");
+            }
+            touch_notification = false;
+        }
+#endif
 #else
         Thread::wait(1000);
 #endif

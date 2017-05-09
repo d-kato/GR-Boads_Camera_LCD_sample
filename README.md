@@ -97,3 +97,14 @@ GR-LYCHEEの場合、「0:60fps, 1:30fps, 2:20fps, 3:15fps, 4:12fps, 5:10fps」�
 #define VIDEO_PIXEL_HW       (640u)  /* VGA */
 #define VIDEO_PIXEL_VW       (480u)  /* VGA */
 ```
+
+#### カメラの露光・ゲイン設定を変更する (GR-LYCHEEのみ)
+カメラの露光とゲインの設定を変更することができます。  
+DisplayAppで画像が映っている状態で、画面上をマウスでクリックすると、露光・ゲインのマニュアル設定ができます。X軸が露光、Y軸がゲインに対応しています。マウスボタンを離すと自動調整ONに戻ります。  
+ゲイン設定については特殊な計算方法で算出されます。詳しくはデータシートを参照してください。設定された露光・ゲインの値はprintf()にてターミナル上に出力されます。  
+
+機能を無効にするには`main.cpp`の``OV7725_SETTING_TEST``に``0``を設定します。  
+
+```cpp
+#define OV7725_SETTING_TEST    (1)                 /* Exposure and Gain Setting Test 0:disable 1:enable */
+```
