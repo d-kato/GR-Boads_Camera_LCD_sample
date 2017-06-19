@@ -21,8 +21,11 @@
 /*! Frame buffer stride: Frame buffer stride should be set to a multiple of 32 or 128
     in accordance with the frame buffer burst transfer mode. */
 #if MBED_CONF_APP_LCD
-  #define VIDEO_PIXEL_HW       LCD_PIXEL_WIDTH   /* QVGA */
-  #define VIDEO_PIXEL_VW       LCD_PIXEL_HEIGHT  /* QVGA */
+  #define VIDEO_PIXEL_HW       LCD_PIXEL_WIDTH
+  #define VIDEO_PIXEL_VW       LCD_PIXEL_HEIGHT
+  #if (MBED_CONF_APP_LCD_TYPE == GR_PEACH_4_3INCH_SHIELD) || (MBED_CONF_APP_LCD_TYPE == GR_LYCHEE_TF043HV001A0)
+  #define ASPECT_RATIO_16_9    (1)
+  #endif
 #else
   #define VIDEO_PIXEL_HW       (640u)  /* VGA */
   #define VIDEO_PIXEL_VW       (480u)  /* VGA */
@@ -167,7 +170,11 @@ int main(void) {
         user_frame_buffer0[i + 1] = 0x80;
     }
 
-    EasyAttach_Init(Display);
+#if ASPECT_RATIO_16_9
+    EasyAttach_Init(Display, 640, 360);  //aspect ratio 16:9
+#else
+    EasyAttach_Init(Display);            //aspect ratio 4:3
+#endif
 #if JPEG_SEND
     Jcu.SetQuality(JPEG_ENCODE_QUALITY);
     // Interrupt callback function setting (Field end signal for recording function in scaler 0)

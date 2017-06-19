@@ -23,7 +23,7 @@ GR-LYCHEEの開発環境については、[GR-LYCHEE用オフライン開発環�
 }
 ```
 
-カメラとLCDの指定を行う場合は``mbed_app.json``に以下を追加してください。
+カメラとLCDの指定を行う場合は``mbed_app.json``に``camera-type``と``lcd-type``を追加してください。
 ```json
 {
     "config": {
@@ -32,7 +32,7 @@ GR-LYCHEEの開発環境については、[GR-LYCHEE用オフライン開発環�
             "value": "1"
         },
         "camera-type":{
-            "help": "Options are CAMERA_CVBS, CAMERA_MT9V111, CAMERA_OV7725",
+            "help": "Please see mbed-gr-libs/README.md",
             "value": "CAMERA_CVBS"
         },
         "lcd":{
@@ -40,12 +40,30 @@ GR-LYCHEEの開発環境については、[GR-LYCHEE用オフライン開発環�
             "value": "1"
         },
         "lcd-type":{
-            "help": "Options are GR_PEACH_4_3INCH_SHIELD, GR_PEACH_7_1INCH_SHIELD, GR_PEACH_RSK_TFT, GR_PEACH_DISPLAY_SHIELD, GR_LYCHEE_LCD",
+            "help": "Please see mbed-gr-libs/README.md",
             "value": "GR_PEACH_4_3INCH_SHIELD"
         }
     }
 }
 ```
+
+
+| camera-type "value"     | 説明                               |
+|:------------------------|:-----------------------------------|
+| CAMERA_CVBS             | GR-PEACH NTSC信号                  |
+| CAMERA_MT9V111          | GR-PEACH MT9V111                   |
+| CAMERA_OV7725           | GR-LYHCEE 付属カメラ               |
+
+| lcd-type "value"        | 説明                               |
+|:------------------------|:-----------------------------------|
+| GR_PEACH_4_3INCH_SHIELD | GR-PEACH 4.3インチLCDシールド      |
+| GR_PEACH_7_1INCH_SHIELD | GR-PEACH 7.1インチLCDシールド      |
+| GR_PEACH_RSK_TFT        | GR-PEACH RSKボード用LCD            |
+| GR_PEACH_DISPLAY_SHIELD | GR-PEACH Display Shield            |
+| GR_LYCHEE_LCD           | GR-LYHCEE AM-320240LKTMQW-51H      |
+| GR_LYCHEE_TF043HV001A0  | GR-LYHCEE TF043HV001A0             |
+
+
 camera-typeとlcd-typeを指定しない場合は以下の設定となります。  
 * GR-PEACH、カメラ：CAMERA_MT9V111、LCD：GR_PEACH_4_3INCH_SHIELD  
 * GR-LYCHEE、カメラ：CAMERA_OV7725、LCD：GR_LYCHEE_LCD  
