@@ -4,9 +4,17 @@
             "help": "0:disable 1:enable",
             "value": "1"
         },
+        "camera-type":{
+            "help": "Please see EasyAttach_CameraAndLCD/README.md",
+            "value": null
+        },
         "lcd":{
             "help": "0:disable 1:enable",
             "value": "0"
+        },
+        "lcd-type":{
+            "help": "Please see EasyAttach_CameraAndLCD/README.md",
+            "value": null
         }
     }
 }

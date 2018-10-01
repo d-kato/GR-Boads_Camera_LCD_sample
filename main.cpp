@@ -71,7 +71,7 @@ static void JcuEncodeCallBackFunc(JPEG_Converter::jpeg_conv_error_t err_code) {
 
 static void snapshot(void) {
     while ((jcu_encoding == 1) || (image_change == 0)) {
-        Thread::wait(1);
+        ThisThread::sleep_for(1);
     }
     jcu_buf_index_read = jcu_buf_index_write_done;
     image_change = 0;
@@ -147,7 +147,7 @@ static void Start_LCD_Display(void) {
     );
     Display.Graphics_Start(DisplayBase::GRAPHICS_LAYER_0);
 
-    Thread::wait(50);
+    ThisThread::sleep_for(50);
     EasyAttach_LcdBacklight(true);
 }
 #endif
@@ -178,7 +178,7 @@ int main(void) {
 #if JPEG_SEND
         snapshot();
 #else
-        Thread::wait(1000);
+        ThisThread::sleep_for(1000);
 #endif
     }
 }

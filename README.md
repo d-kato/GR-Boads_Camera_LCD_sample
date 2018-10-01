@@ -7,46 +7,9 @@ GR-LYCHEEの開発環境については、[GR-LYCHEE用オフライン開発環�
 カメラ画像をLCD、または、Windows用PCアプリ**DisplayApp**に表示させるサンプルです。  
 
 ### カメラとLCDの設定
-``mbed_app.json``ファイルを変更することでLCD表示をONにできます。
-```json
-{
-    "config": {
-        "camera":{
-            "help": "0:disable 1:enable",
-            "value": "1"
-        },
-        "lcd":{
-            "help": "0:disable 1:enable",
-            "value": "1"
-        }
-    }
-}
-```
+``mbed_app.json``ファイルを変更することでLCD表示をONにできます。  
+詳細は ``mbed-gr-libs/EasyAttach_CameraAndLCD/README.md`` を参照ください。  
 
-カメラとLCDの指定を行う場合は``mbed_app.json``に``camera-type``と``lcd-type``を追加してください。  
-詳細は``mbed-gr-libs/README.md``を参照ください。  
-```json
-{
-    "config": {
-        "camera":{
-            "help": "0:disable 1:enable",
-            "value": "1"
-        },
-        "camera-type":{
-            "help": "Please see mbed-gr-libs/README.md",
-            "value": "CAMERA_CVBS"
-        },
-        "lcd":{
-            "help": "0:disable 1:enable",
-            "value": "1"
-        },
-        "lcd-type":{
-            "help": "Please see mbed-gr-libs/README.md",
-            "value": "GR_PEACH_4_3INCH_SHIELD"
-        }
-    }
-}
-```
 
 ***mbed CLI以外の環境で使用する場合***  
 mbed CLI以外の環境をお使いの場合、``mbed_app.json``の変更は反映されません。  
